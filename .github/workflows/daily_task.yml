@@ -1,0 +1,26 @@
+name: Update Key Every 24h
+on:
+  schedule:
+    - cron: '0 0 * * *' # Gira ogni giorno a mezzanotte (UTC)
+  workflow_dispatch:    # Ti permette di avviarlo a mano per testare
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run script
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: python update_key.py
